@@ -2,22 +2,13 @@ import glfw
 import os
 from OpenGL.GL import *
 import OpenGL.GL.shaders
+import numpy as np
 import math
 import pyrr
 import openmesh as om
 import json
 from PIL import Image #, ImageDraw, ImageOps
-import numpy as np
 
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
-from OpenGL.GL.framebufferobjects import *
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLE import *
-import ctypes
-from ctypes import util
-from OpenGL.GL import *
 
 def load_texture(i, path, nearest=False, repeat_x_edge=False):
     gltex = [GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7]
@@ -44,19 +35,7 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-
-
 def main():
-    # Set up FBO
-
-    # Load OpenGL library
-
-
-    # Continue with the rest of your code
-
-    # fbo = glGenFramebuffers(1)
-
-    # gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fbo)
 
     ### WINDOW SETUP ###########################################################
 
@@ -74,7 +53,7 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    parent_path = os.path.abspath('..')
+    parent_path = os.path.abspath('.')
     mesh = om.read_trimesh(parent_path+'\\3d_model\\plank.obj', vertex_normal=True)
 
     #Vertices with normals
@@ -104,8 +83,10 @@ def main():
 
     ### LOAD VERTEX AND FRAGEMENT SHADERS FROM EXTERNAL FILES ##################
 
-    VERTEX_SHADER = open(parent_path+"\\setup\\main.vert",'r').read()
-    FRAGMENT_SHADER = open(parent_path+"\\setup\\main.frag",'r').read()
+    #VERTEX_SHADER = open("main.vert",'r').read()
+    VERTEX_SHADER = open(parent_path+'\\setup\\main.vert','r').read()
+    
+    FRAGMENT_SHADER = open(parent_path+'\\setup\\main.frag','r').read()
 
     # Compile The Program and shaders
 
@@ -118,15 +99,15 @@ def main():
     glEnable(GL_TEXTURE_2D)
 
     # Wood colors etc.
-    load_texture(0, parent_path+'//wood_color_maps//wood_bar_color.bmp')
-    load_texture(1, parent_path+'//wood_color_maps//wood_bar_specular.bmp')
-    load_texture(2, parent_path+'//wood_color_maps//wood_bar_normal.bmp')
+    load_texture(0, parent_path+'\\wood_color_maps\\wood_bar_color.bmp')
+    load_texture(1, parent_path+'\\wood_color_maps\\wood_bar_specular.bmp')
+    load_texture(2, parent_path+'\\wood_color_maps\\wood_bar_normal.bmp')
 
     # Internal tree log skeleton geometry
-    load_texture(3, parent_path+'//tree_geo_maps//pith_and_radius_map.bmp',repeat_x_edge=True)
-    load_texture(4, parent_path+'//tree_geo_maps//knot_height_map.bmp')
-    load_texture(5, parent_path+'//tree_geo_maps//knot_orientation_map.bmp')
-    load_texture(6, parent_path+'//tree_geo_maps//knot_state_map.bmp',nearest=True)
+    load_texture(3, parent_path+'\\tree_geo_maps\\pith_and_radius_map.bmp',repeat_x_edge=True)
+    load_texture(4, parent_path+'\\tree_geo_maps\\knot_height_map.bmp')
+    load_texture(5, parent_path+'\\tree_geo_maps\\knot_orientation_map.bmp')
+    load_texture(6, parent_path+'\\tree_geo_maps\\knot_state_map.bmp',nearest=True)
 
     glUseProgram(shader)
 
@@ -169,17 +150,17 @@ def main():
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model)
 
     # View matrix
-    rot_x = pyrr.Matrix44.from_x_rotation(-90.00)
-    rot_z = pyrr.Matrix44.from_z_rotation(0.0)
+    rot_x = pyrr.Matrix44.from_x_rotation(2.00)
+    rot_z = pyrr.Matrix44.from_z_rotation(3.8)
     view = np.array(rot_x*rot_z);
     viewLoc = glGetUniformLocation(shader, "view")
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view)
 
     # View position
-    view_pos_vec = np.array([3.0, 3.0, 3.0, 3.0],dtype=np.float32)
+    view_pos_vec = np.array([0, 0, 3.0, 0.0],dtype=np.float32)
     view_pos_vec = view*view_pos_vec;
     viewPosLoc = glGetUniformLocation(shader, "viewPos")
-    glUniform3f(viewPosLoc, -1.5, 2.0, -1.0)
+    glUniform3f(viewPosLoc, -1.5, 2.0, -1.0);
 
     # Light position
     lrot = 5.2
@@ -199,8 +180,7 @@ def main():
 
         # Pass time variable to fragment shader (for animation)
         timeLoc = glGetUniformLocation(shader, "time")
-        #glUniform1f(timeLoc, glfw.get_time())
-        glUniform1f(timeLoc, 590.0)
+        glUniform1f(timeLoc, glfw.get_time())
 
         # Draw mesh
         glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT,  None)
