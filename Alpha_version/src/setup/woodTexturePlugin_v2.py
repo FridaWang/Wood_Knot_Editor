@@ -6,6 +6,8 @@ import maya.cmds as cmds
 import textureGenerator
 import screenshot
 
+import maya.mel as mel
+
 class TexturePlugin:
     def __init__(self):
         self.window_name = "Texture Plugin"
@@ -22,7 +24,9 @@ class TexturePlugin:
         cmds.floatSliderGrp("transparency_slider", label="Transparency", min=0.0, max=1.0, value=0.0, step=0.1)
         cmds.button(label="Apply Texture", command=self.apply_texture)
         cmds.showWindow(window)
-
+    def create_newUI(self):
+        mel.eval('source "woodTex.mel"')
+        
     def apply_texture(self, *args):
         # generate procedual texture
         try:
