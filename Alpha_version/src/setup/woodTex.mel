@@ -1,6 +1,14 @@
-global proc callLSystemCmd()
+global proc callWoodTexGenCmd()
 {
-   
+    print("Generating wood knot texture...\n");
+    float $smoothness, $liveKnots, $deadKnots, $thickness;
+
+    $smoothness = `floatSliderGrp -query -value smoothControl`;
+    $liveKnots = `floatSliderGrp -query -value liveKnotsControl`;
+    $deadKnots = `floatSliderGrp -query -value deadKnotsControl`;
+    $thickness = `floatSliderGrp -query -value thicknessControl`;
+
+    WoodTexGenCmd -s $smoothness -l $liveKnots -d $deadKnots -t $thickness;
 }
 
 global proc btn_Browse_Clicked()
@@ -85,7 +93,7 @@ global proc createWoodTexGUI()
 
         frameLayout -labelVisible false -marginWidth 5 -marginHeight 5;
             rowLayout -numberOfColumns 2;
-                button -label "Apply" -command "callLSystemCmd";
+                button -label "Apply" -command "callWoodTexGenCmd";
                 button -label "Cancel" -command "";
             setParent..;
         setParent..;
