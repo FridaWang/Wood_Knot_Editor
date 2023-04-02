@@ -434,7 +434,8 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0),32);
     vec3 specular = shininess * specularStrength * spec * lightColor;
     //Combine
-    vec3 result = (ambient + diffuse + specular) * texColor;
+    //vec3 result = (ambient + diffuse + specular) * texColor;
+    vec3 result = texColor;
     outColor = vec4(result, 1.0);
 }
 
