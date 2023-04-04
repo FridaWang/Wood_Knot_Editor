@@ -23,6 +23,15 @@ uniform mat4 model;
 uniform mat4 view;
 uniform float time;
 
+uniform float k_s;
+uniform float k_b;
+uniform vec3 knotColor;
+uniform float dead_color_factor_default;
+uniform float dead_outline_factor_default;
+uniform float dead_outline_thickness_default;
+
+
+
 out vec4 outColor;
 
 vec4 cubic(float x){
@@ -308,8 +317,8 @@ void main()
     float t_b_min = 9.0;  //initiate minimum of all knot time values
 
     //k-parameters of smoothness of min union
-    float k_s = 1.5;
-    float k_b = 5.0;
+    //float k_s = 1.5;
+    //float k_b = 5.0;
 
     //for-parameters of smoothness of min union with dead branches
     float f1 = -1.5;
@@ -318,9 +327,9 @@ void main()
     float f4 = 5.0; //speed of increasing k (decreasing smoothness) with time after death of knot
 
     //dead knot color parameters
-    float dead_color_factor = 0;
-    float dead_outline_factor = 1.0;
-    float dead_outline_thickness = 0.02;
+    float dead_color_factor = dead_color_factor_default;
+    float dead_outline_factor = dead_outline_factor_default;
+    float dead_outline_thickness = dead_outline_thickness_default;
 
     float DELTA[20]; // list of delta - amount of smoothness
 
@@ -398,7 +407,7 @@ void main()
 
     // COLOR. PAPER Section 4.3
     vec3 texColor = vec3(texture2D(ColorMap, vec2(t,0.5)));
-    vec3 knotColor = vec3(0.20,0.20,0.15); //arbitrary color
+    //vec3 knotColor = vec3(0.20,0.20,0.15); //arbitrary color
     float m = 14;
     float g = 1/pow(clamp(1.2*t_b_min-t_s,0.001,1.0)+1.0,m);
     texColor -= g*knotColor; //darken knot (alive and dead)
