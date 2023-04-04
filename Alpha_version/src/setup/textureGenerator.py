@@ -1,16 +1,15 @@
 import glfw
 import os
-from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
 import math
 import pyrr
 import openmesh as om
-import json
 from PIL import Image #, ImageDraw, ImageOps
 from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 import imageio
+import json
 
 def load_texture(i, path, nearest=False, repeat_x_edge=False):
     gltex = [GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7]
@@ -39,6 +38,13 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 def main():
+    p_file = open('parameters.json')
+    data = json.load(p_file)
+    smoothness = data['smoothness']
+    liveknots = data['liveknots']
+    deadKnots = data['deadKnots']
+    thickness = data['thickness']
+
 
     ### WINDOW SETUP ###########################################################
 
@@ -161,6 +167,31 @@ def main():
     glUniform1f(hmaxLoc, hmax)
     knumLoc = glGetUniformLocation(shader, "N")
     glUniform1i(knumLoc, knum)
+
+    #customize parameters
+    k_s = 1.5
+    k_b = 5.0
+    knotColor = np.array([0.20,0.20,0.15])
+    dead_color_factor = 0
+    dead_outline_factor = 1.0
+    dead_outline_thickness = 0.02
+    k_sLoc = glGetUniformLocation(shader, "k_s")
+    glUniform1f(k_sLoc, k_s)
+
+    k_bLoc = glGetUniformLocation(shader, "k_b")
+    glUniform1f(k_bLoc, k_b)
+
+    knotColorLoc = glGetUniformLocation(shader, "knotColor")
+    glUniform3f(knotColorLoc, knotColor[0], knotColor[1], knotColor[2])
+
+    dead_color_factorLoc = glGetUniformLocation(shader, "dead_color_factor_default")
+    glUniform1f(dead_color_factorLoc, dead_color_factor)
+
+    dead_outline_factorLoc = glGetUniformLocation(shader, "dead_outline_factor_default")
+    glUniform1f(dead_outline_factorLoc, dead_outline_factor)
+
+    dead_outline_thicknessLoc = glGetUniformLocation(shader, "dead_outline_thickness_default")
+    glUniform1f(dead_outline_thicknessLoc, dead_outline_thickness)
 
     # Model matrix
     mrot = 0.0
