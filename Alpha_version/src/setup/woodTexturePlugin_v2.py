@@ -1,27 +1,64 @@
 import sys
-
+import os
 import maya.OpenMaya as OpenMaya
 import maya.cmds as cmds
+import maya.OpenMayaAnim as OpenMayaAnim
+import maya.OpenMayaMPx as OpenMayaMPx
 
 import textureGenerator
 import screenshot
 
-class TexturePlugin:
-    def __init__(self):
-        self.window_name = "Texture Plugin"
-        self.image_path = None
-        self.default_path = 'D:/Upenn/Spring2023/CIS660/Authoring_tool/Textures/light_wood_texture.jpg'
+import maya.mel as mel
+import json
 
-    def create_ui(self):
-        # Create a window with a file browser
-        if cmds.window(self.window_name, exists=True):
-            cmds.deleteUI(self.window_name)
-        window = cmds.window(self.window_name, title="Texture Generator")
-        cmds.columnLayout(adjustableColumn=True)
-        cmds.textFieldButtonGrp("file_path", label='Image File', text = self.default_path, buttonLabel='Browse', bc=self.load_image_file)
-        cmds.floatSliderGrp("transparency_slider", label="Transparency", min=0.0, max=1.0, value=0.0, step=0.1)
-        cmds.button(label="Apply Texture", command=self.apply_texture)
-        cmds.showWindow(window)
+class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
+    kPluginCmdName = "WoodTexGenCmd"
+
+    def __init__(self):
+        OpenMayaMPx.MPxCommand.__init__(self)
+        self.smoothness = 0.0
+        self.liveKnots = 0.0
+        self.deadKnots = 0.0
+        self.thickness = 0.0
+        
+        self.texturePath = 'D:/Upenn/Spring2023/CIS660/Authoring_tool/Textures/light_wood_texture.jpg'
+
+    @staticmethod
+    def creator():
+        return OpenMayaMPx.asMPxPtr(WoodTexGenCmd())
+
+    def doIt(self, args):
+        # Add your command implementation here
+        print("CALL WoodTexGenCmd!")
+        argData = OpenMaya.MArgParser (self.syntax(), args)
+
+        if argData.isFlagSet ('s'):
+            self.smoothness = argData.flagArgumentDouble('s', 0)
+        if argData.isFlagSet ('l'):
+            self.liveKnots = argData.flagArgumentDouble('l', 0)
+        if argData.isFlagSet ('d'):
+            self.deadKnots = argData.flagArgumentDouble('d', 0)
+        if argData.isFlagSet ('t'):
+            self.thickness = argData.flagArgumentDouble('t', 0)    
+
+        parameters = {
+            'smoothness': self.smoothness,
+            'liveknots': self.liveKnots,
+            'deadKnots': self.deadKnots,
+            'thickness': self.thickness
+        }
+
+        json_filename = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+
+        with open(json_filename, 'w') as f:
+            json.dump(parameters, f)
+            print("Write parameters to file path...")
+
+        # Generating texture with the custom parameters
+        # textureGenerator.main()
+
+        # Apply the generated texture to the selected object in the scene
+        self.apply_texture()
 
     def apply_texture(self, *args):
         # generate procedual texture
@@ -31,20 +68,14 @@ class TexturePlugin:
         except Exception as e:
             sys.stderr.write(str(e) + "\n")
 
-        if not self.image_path:
-            # Use default texture
-            self.image_path = self.default_path
-
         selected_objects = cmds.ls(selection=True)
         if not selected_objects:
             cmds.warning("Please select at least one object.")
             return
 
-        print(self.image_path)
-
         # Load the image file
         file_node = cmds.shadingNode('file', asTexture=True)
-        cmds.setAttr(file_node + '.fileTextureName', self.image_path, type='string')
+        cmds.setAttr(file_node + '.fileTextureName', self.texturePath, type='string')
 
         # Create a new shading node
         surface_shader = cmds.shadingNode('surfaceShader', asShader=True)
@@ -54,51 +85,53 @@ class TexturePlugin:
         cmds.connectAttr(surface_shader + '.outColor', shading_group + '.surfaceShader')
         cmds.connectAttr(file_node + '.outColor', surface_shader + '.outColor')
 
-        transparency_value = cmds.floatSliderGrp("transparency_slider", q=True, value=True)
-        cmds.setAttr(surface_shader + ".outTransparency", transparency_value, transparency_value, transparency_value, type="double3")
-
         cmds.sets(selected_objects, edit=True, forceElement=shading_group)
 
-    def load_image_file(self, *args):
-        file_path = cmds.fileDialog2(fileMode=1, caption="Select Image File", fileFilter="Image Files (*.jpg *.png *.bmp)")
-        if file_path:
-            self.image_path = file_path[0]
-            cmds.textFieldButtonGrp("file_path", edit=True, text=self.image_path)
-
-
-def load_plugin(*args):
-    tp = TexturePlugin()
-    tp.create_ui()
-
 ## store the menu name
-menuName = "Wood Tex"
+menuLabel = "WoodTex"
 
-def createMenu():
-    if cmds.menu(menuName, exists=True):
-        cmds.deleteUI(menuName)
-
-    menu = cmds.menu(menuName, label="Procedural Wood Texture", parent="MayaWindow")
-    cmds.menuItem(label="Apply defult texture", command=load_plugin, parent=menu)
-
-def deleteMenu():
-    if cmds.menu(menuName, exists=True):
-        cmds.deleteUI(menuName)
-
-# Register the plug-in
-def initializePlugin(plugin):
-    print("Initializing plugin...")
+def createMenu(pluginPath):
+    woodTexProc = "woodTex"
     try:
-        createMenu()
+        OpenMaya.MGlobal.executeCommand("source \"%s/%s.mel\";" % (pluginPath, woodTexProc))
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
-       
-# Unregister the plug-in
-def uninitializePlugin(plugin):
+    
+def deleteMenu(pluginPath):
+    command = "deleteUI \"%s\";" % (menuLabel)
     try:
-        print("Uninitializing plugin...")
-        deleteMenu()
+        OpenMaya.MGlobal.executeCommand(command)
     except Exception as e:
         sys.stderr.write(str(e) + "\n")
-        
 
+# Create an instance of the command.
+def cmdCreator():
+    return OpenMayaMPx.asMPxPtr(WoodTexGenCmd())
 
+# Syntax creator 
+def syntaxCreator(): 
+    syntax = OpenMaya.MSyntax()
+
+    syntax.addFlag('s', 'smoothness', OpenMaya.MSyntax.kDouble)
+    syntax.addFlag('l', 'liveKnots', OpenMaya.MSyntax.kDouble)
+    syntax.addFlag('d', 'deadKnots', OpenMaya.MSyntax.kDouble)
+    syntax.addFlag('t', 'thickness', OpenMaya.MSyntax.kDouble)
+
+    return syntax 
+
+# initialize the script plug-in
+def initializePlugin(mobject):
+    mplugin = OpenMayaMPx.MFnPlugin(mobject)
+    try:
+        mplugin.registerCommand(WoodTexGenCmd.kPluginCmdName, cmdCreator, syntaxCreator)
+        createMenu(mplugin.loadPath())
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
+
+# Uninitialize the plugin
+def uninitializePlugin(mobject):
+    mplugin = OpenMayaMPx.MFnPlugin(mobject)
+    try:
+        mplugin.deregisterCommand(WoodTexGenCmd.kPluginCmdName)
+    except Exception as e:
+        sys.stderr.write(str(e) + "\n")
