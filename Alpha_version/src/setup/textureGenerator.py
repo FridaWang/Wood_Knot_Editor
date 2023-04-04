@@ -44,7 +44,7 @@ def main():
 
     if not glfw.init():
         return
-    #glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
+    glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
     width = height = 600
     window = glfw.create_window(width, height, "Procedural Knots", None, None)
 
@@ -98,19 +98,19 @@ def main():
         OpenGL.GL.shaders.compileShader(FRAGMENT_SHADER, GL_FRAGMENT_SHADER))
 
     #Customize: Create a framebuffer and bind it
-    # framebuffer = glGenFramebuffers(1)
-    # glBindFramebuffer(GL_FRAMEBUFFER, framebuffer)
+    framebuffer = glGenFramebuffers(1)
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer)
     #Customize: Create a texture to store the output
-    # output_texture = glGenTextures(1)
-    # glBindTexture(GL_TEXTURE_2D, output_texture)
-    # glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, None)
+    output_texture = glGenTextures(1)
+    glBindTexture(GL_TEXTURE_2D, output_texture)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, None)
     #Customize: Attach the texture to the framebuffer
-    # glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0)
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, output_texture, 0)
     #Customize: Check if the framebuffer is complete
-    # if glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE:
-    #     print("Error: Framebuffer is not complete!")
-    #     glfw.terminate()
-    #     exit()
+    if glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE:
+        print("Error: Framebuffer is not complete!")
+        glfw.terminate()
+        exit()
 
 
     ### LOAD TEXTURE MAPS ######################################################
@@ -192,30 +192,30 @@ def main():
     glClearColor(1.0, 1.0, 1.0, 1.0)
     glEnable(GL_DEPTH_TEST)
 
-    while not glfw.window_should_close(window):
+    # while not glfw.window_should_close(window):
 
-        glfw.poll_events()
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    #glfw.poll_events()
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        # Pass time variable to fragment shader (for animation)
-        timeLoc = glGetUniformLocation(shader, "time")
-        #glUniform1f(timeLoc, glfw.get_time())
-        glUniform1f(timeLoc, 590.0)
+    # Pass time variable to fragment shader (for animation)
+    timeLoc = glGetUniformLocation(shader, "time")
+    #glUniform1f(timeLoc, glfw.get_time())
+    glUniform1f(timeLoc, 590.0)
 
-        # Draw mesh
-        glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT,  None)
+    # Draw mesh
+    glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT,  None)
 
-        # Swap buffers
-        glfw.swap_buffers(window)
+    # Swap buffers
+    glfw.swap_buffers(window)
 
     #Customize: Read the pixels from the framebuffer into a NumPy array
-    # pixels = glReadPixels(0, 0, height, width, GL_RGBA, GL_UNSIGNED_BYTE)
-    # image_data = np.frombuffer(pixels, dtype=np.uint8).reshape(height, width, 4)
-    # imageio.imwrite("output.png", np.flipud(image_data))
-    #
-    # glDeleteTextures(1, [output_texture])
-    # glDeleteFramebuffers(1, [framebuffer])
-    # glDeleteProgram(shader)
+    pixels = glReadPixels(0, 0, height, width, GL_RGBA, GL_UNSIGNED_BYTE)
+    image_data = np.frombuffer(pixels, dtype=np.uint8).reshape(height, width, 4)
+    imageio.imwrite("output.png", np.flipud(image_data))
+
+    glDeleteTextures(1, [output_texture])
+    glDeleteFramebuffers(1, [framebuffer])
+    glDeleteProgram(shader)
     glfw.terminate()
 
 if __name__ == "__main__":
