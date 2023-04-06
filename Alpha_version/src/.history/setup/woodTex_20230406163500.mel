@@ -1,15 +1,14 @@
 global proc callWoodTexGenCmd()
 {
     print("Generating wood knot texture...\n");
-    float $tightness, $distortion, $liveKnots, $deadKnots, $thickness;
+    float $smoothness, $liveKnots, $deadKnots, $thickness;
 
-    $tightness = `floatSliderGrp -query -value edgeTightnessControl`;
-    $distortion = `floatSliderGrp -query -value knotDistortionControl`;
+    $smoothness = `floatSliderGrp -query -value smoothControl`;
     $liveKnots = `floatSliderGrp -query -value liveKnotsControl`;
     $deadKnots = `floatSliderGrp -query -value deadKnotsControl`;
     $thickness = `floatSliderGrp -query -value thicknessControl`;
 
-    WoodTexGenCmd -e $tightness -k $distortion -l $liveKnots -d $deadKnots -t $thickness;
+    WoodTexGenCmd -s $smoothness -l $liveKnots -d $deadKnots -t $thickness;
 }
 
 global proc btn_Browse_Clicked()
@@ -46,19 +45,19 @@ global proc createWoodTexGUI()
         frameLayout -label "Knot Input" -marginWidth 5 -marginHeight 5;
             rowLayout -numberOfColumns 3 -cw 1 100;
                 text -align "left" -label "knot height map:";
-                textField -w 150 -editable true heightInputControl;  
+                textField -w 150 -editable true stemInputControl;  
                 button -label "Browse" -command "btn_Browse_Clicked";
             setParent..;
 
             rowLayout -numberOfColumns 3 -cw 1 100;
                 text -align "left" -label "knot orientation map:";
-                textField -w 150 -editable true oriInputControl;  
+                textField -w 150 -editable true stemInputControl;  
                 button -label "Browse" -command "btn_Browse_Clicked";
             setParent..;
 
             rowLayout -numberOfColumns 3 -cw 1 100;
                 text -align "left" -label "knot state map:";
-                textField -w 150 -editable true stateInputControl;  
+                textField -w 150 -editable true stemInputControl;  
                 button -label "Browse" -command "btn_Browse_Clicked";
             setParent..;
         setParent ..;
@@ -66,7 +65,7 @@ global proc createWoodTexGUI()
         frameLayout -label "Color Input" -marginWidth 5 -marginHeight 5;
             rowLayout -numberOfColumns 3 -cw 1 100;
                 text -align "left" -label "Color map:";
-                textField -w 150 -editable true colorInputControl;  
+                textField -w 150 -editable true stemInputControl;  
                 button -label "Browse" -command "btn_Browse_Clicked";
             setParent..;
         setParent ..;
@@ -74,12 +73,12 @@ global proc createWoodTexGUI()
         frameLayout -label "Other parameters" -marginWidth 5 -marginHeight 5;
             columnLayout;
                 rowLayout -nc 2 -cw 1 150 -cw 2 300;
-                    text -label "Knot edge tightness" -align "left";
-                    floatSliderGrp -field true -minValue 0.0 -maxValue 10.0 -value 5.0 -pre 1 -step 0.5 edgeTightnessControl;
+                    text -label "Edge tightness" -align "left";
+                    floatSliderGrp -field true -minValue 0.0 -maxValue 5.0 -value 5.0 -pre 1 -step 0.1 edgeTightnessControl;
                 setParent ..;
                 rowLayout -nc 2 -cw 1 150 -cw 2 300;
-                    text -label "Knot distortion strength" -align "left";
-                    floatSliderGrp -field true -minValue 0.0 -maxValue 10.0 -value 1.5 -pre 1 -step 0.5 knotDistortionControl;
+                    text -label "Knot distortion" -align "left";
+                    floatSliderGrp -field true -minValue 0.0 -maxValue 5.0 -value 1.0 -pre 1 -step 0.1 knotDistortionControl;
                 setParent ..;
                 rowLayout -nc 2 -cw 1 150 -cw 2 300;
                     text -label "Darken strength for knots" -align "left";

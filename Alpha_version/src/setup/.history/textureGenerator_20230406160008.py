@@ -42,7 +42,6 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 def main():
-    
     print(OpenGL.__file__)
     #parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
     parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'

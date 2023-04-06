@@ -1,1 +1,1 @@
-{"smoothness": 0.0, "liveknots": 1.0, "deadKnots": 2.0, "thickness": 0.015}
+{"edgetightness": 5.0, "knotdistortion": 1.5, "liveknots": 1.0, "deadKnots": 2.0, "thickness": 0.015}

@@ -42,10 +42,9 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 def main():
-    
     print(OpenGL.__file__)
     #parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
-    parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+    parm_path = r''
     p_file = open(parm_path)
     data = json.load(p_file)
     smoothness = data['smoothness']
@@ -70,8 +69,7 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    #parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
-    parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
+    parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
     #mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
     mesh = om.read_trimesh(parent_path + '\\3d_model\\plank.obj', vertex_normal=True)
 
@@ -252,11 +250,13 @@ def main():
     #Customize: Read the pixels from the framebuffer into a NumPy array
     pixels = glReadPixels(0, 0, height, width, GL_RGBA, GL_UNSIGNED_BYTE)
     image_data = np.frombuffer(pixels, dtype=np.uint8).reshape(height, width, 4)
-    imageio.imwrite(parent_path+'//setup//output.png', np.flipud(image_data))
+    imageio.imwrite(r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\output.png', np.flipud(image_data))
+
     glDeleteTextures(1, [output_texture])
     glDeleteFramebuffers(1, [framebuffer])
     glDeleteProgram(shader)
     glfw.terminate()
 
 if __name__ == "__main__":
+
     main()

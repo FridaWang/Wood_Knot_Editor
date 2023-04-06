@@ -33,10 +33,8 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
         print("CALL WoodTexGenCmd!")
         argData = OpenMaya.MArgParser (self.syntax(), args)
 
-        if argData.isFlagSet ('e'):
-            self.edgetightness = argData.flagArgumentDouble('e', 0)
-        if argData.isFlagSet ('k'):
-            self.knotdistortion = argData.flagArgumentDouble('k', 0)
+        if argData.isFlagSet ('s'):
+            self.smoothness = argData.flagArgumentDouble('s', 0)
         if argData.isFlagSet ('l'):
             self.liveKnots = argData.flagArgumentDouble('l', 0)
         if argData.isFlagSet ('d'):
@@ -46,7 +44,7 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
 
         parameters = {
             'edgetightness': self.edgetightness,
-            'knotdistortion': self.knotdistortion,
+            'knotdistortion': self.knotdistortion
             'liveknots': self.liveKnots,
             'deadKnots': self.deadKnots,
             'thickness': self.thickness

@@ -11,6 +11,7 @@ import textureGenerator
 import maya.mel as mel
 import json
 
+
 class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
     kPluginCmdName = "WoodTexGenCmd"
 
@@ -18,6 +19,7 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
         OpenMayaMPx.MPxCommand.__init__(self)
         self.edgetightness = 0.0
         self.knotdistortion = 0.0
+        self.smoothness = 0.0
         self.liveKnots = 0.0
         self.deadKnots = 0.0
         self.thickness = 0.0
@@ -33,10 +35,8 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
         print("CALL WoodTexGenCmd!")
         argData = OpenMaya.MArgParser (self.syntax(), args)
 
-        if argData.isFlagSet ('e'):
-            self.edgetightness = argData.flagArgumentDouble('e', 0)
-        if argData.isFlagSet ('k'):
-            self.knotdistortion = argData.flagArgumentDouble('k', 0)
+        if argData.isFlagSet ('s'):
+            self.smoothness = argData.flagArgumentDouble('s', 0)
         if argData.isFlagSet ('l'):
             self.liveKnots = argData.flagArgumentDouble('l', 0)
         if argData.isFlagSet ('d'):
@@ -45,8 +45,7 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
             self.thickness = argData.flagArgumentDouble('t', 0)    
 
         parameters = {
-            'edgetightness': self.edgetightness,
-            'knotdistortion': self.knotdistortion,
+            'smoothness': self.smoothness,
             'liveknots': self.liveKnots,
             'deadKnots': self.deadKnots,
             'thickness': self.thickness

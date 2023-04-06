@@ -46,7 +46,7 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
 
         parameters = {
             'edgetightness': self.edgetightness,
-            'knotdistortion': self.knotdistortion,
+            'knotdistortion': self.knotdistortion
             'liveknots': self.liveKnots,
             'deadKnots': self.deadKnots,
             'thickness': self.thickness
