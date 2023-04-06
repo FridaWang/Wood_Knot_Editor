@@ -20,7 +20,7 @@ out float zrat;
 
 void main()
 {
-    gl_Position =  view * model * vec4(in_position, 1.0);
+    gl_Position =  view * model * vec4(in_position*2.0, 1.0);
     zrat = hmax/rmin;
     outTexCoords = vec3( in_position.x, in_position.y, in_position.z);
     fragPos = vec3( model * vec4(in_position, 1.0));

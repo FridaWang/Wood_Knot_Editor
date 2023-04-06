@@ -68,7 +68,8 @@ def main():
     ### LOAD INPUT 3D MODEL ####################################################
 
     parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
-    mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
+    #mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
+    mesh = om.read_trimesh(parent_path + '\\3d_model\\plank.obj', vertex_normal=True)
 
     #Vertices with normals
     point_array = mesh.points()
@@ -205,8 +206,8 @@ def main():
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model)
 
     # View matrix
-    rot_x = pyrr.Matrix44.from_x_rotation(2.0)
-    rot_z = pyrr.Matrix44.from_z_rotation(3.8)
+    rot_x = pyrr.Matrix44.from_x_rotation(-4.71)
+    rot_z = pyrr.Matrix44.from_z_rotation(0.0)
     view = np.array(rot_x*rot_z);
     viewLoc = glGetUniformLocation(shader, "view")
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view)
