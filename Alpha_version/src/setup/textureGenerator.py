@@ -1,4 +1,5 @@
-import glfw
+import sys
+sys.path.append(r'C:\Users\54040\AppData\Local\Programs\Python\Python39\lib\site-packages')
 import os
 import OpenGL.GL.shaders
 import numpy as np
@@ -10,6 +11,8 @@ from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 import imageio
 import json
+
+import glfw
 
 def load_texture(i, path, nearest=False, repeat_x_edge=False):
     gltex = [GL_TEXTURE0, GL_TEXTURE1, GL_TEXTURE2, GL_TEXTURE3, GL_TEXTURE4, GL_TEXTURE5, GL_TEXTURE6, GL_TEXTURE7]
@@ -38,7 +41,8 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 def main():
-    parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+    print(OpenGL.__file__)
+    parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
     p_file = open(parm_path)
     data = json.load(p_file)
     smoothness = data['smoothness']
@@ -63,7 +67,7 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
+    parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
     mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
 
     #Vertices with normals
@@ -243,7 +247,7 @@ def main():
     #Customize: Read the pixels from the framebuffer into a NumPy array
     pixels = glReadPixels(0, 0, height, width, GL_RGBA, GL_UNSIGNED_BYTE)
     image_data = np.frombuffer(pixels, dtype=np.uint8).reshape(height, width, 4)
-    imageio.imwrite("output.png", np.flipud(image_data))
+    imageio.imwrite(r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\output.png', np.flipud(image_data))
 
     glDeleteTextures(1, [output_texture])
     glDeleteFramebuffers(1, [framebuffer])
@@ -251,4 +255,5 @@ def main():
     glfw.terminate()
 
 if __name__ == "__main__":
+
     main()

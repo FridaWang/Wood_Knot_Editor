@@ -1,4 +1,5 @@
 import sys
+sys.path.append(r'C:\Users\54040\AppData\Local\Programs\Python\Python39\lib\site-packages')
 import os
 import maya.OpenMaya as OpenMaya
 import maya.cmds as cmds
@@ -6,10 +7,10 @@ import maya.OpenMayaAnim as OpenMayaAnim
 import maya.OpenMayaMPx as OpenMayaMPx
 
 import textureGenerator
-import screenshot
 
 import maya.mel as mel
 import json
+
 
 class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
     kPluginCmdName = "WoodTexGenCmd"
@@ -21,7 +22,7 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
         self.deadKnots = 0.0
         self.thickness = 0.0
         
-        self.texturePath = 'D:/Upenn/Spring2023/CIS660/Authoring_tool/Textures/light_wood_texture.jpg'
+        self.texturePath = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\output.png'
 
     @staticmethod
     def creator():
@@ -48,7 +49,7 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
             'thickness': self.thickness
         }
 
-        json_filename = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+        json_filename = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
 
         with open(json_filename, 'w') as f:
             json.dump(parameters, f)
