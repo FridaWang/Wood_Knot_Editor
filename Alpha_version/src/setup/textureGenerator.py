@@ -1,6 +1,7 @@
 import sys
-#sys.path.append(r'C:\Users\54040\AppData\Local\Programs\Python\Python39\lib\site-packages')
-sys.path.append(r'C:\Users\37978\AppData\Local\Programs\Python\Python39\Lib\site-packages')
+sys.path.append(r'C:\Users\54040\AppData\Local\Programs\Python\Python39\lib\site-packages')
+#sys.path.append(r'C:\Users\37978\AppData\Local\Programs\Python\Python39\Lib\site-packages')
+#sys.path.append(r'C:\Users\54040\AppData\Roaming\Python\Python39\site-packages')
 import os
 import OpenGL.GL.shaders
 import numpy as np
@@ -44,11 +45,12 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
 def main():
     
     print(OpenGL.__file__)
-    #parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
-    parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+    parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
+    #parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
     p_file = open(parm_path)
     data = json.load(p_file)
-    smoothness = data['smoothness']
+    edgetightness = data['edgetightness']
+    knotdistortion = data['knotdistortion']
     liveknots = data['liveknots']
     deadKnots = data['deadKnots']
     thickness = data['thickness']
@@ -70,8 +72,8 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    #parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
-    parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
+    parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
+    #parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
     #mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
     mesh = om.read_trimesh(parent_path + '\\3d_model\\plank.obj', vertex_normal=True)
 
@@ -179,12 +181,13 @@ def main():
     glUniform1i(knumLoc, knum)
 
     #customize parameters
-    k_s = 1.5
-    k_b = 5.0
-    knotColor = np.array([0.20,0.20,0.15])
-    dead_color_factor = 0
+
+    k_b = edgetightness
+    k_s = knotdistortion
+    #knotColor = np.array([0.20,0.20,0.15])
+    dead_color_factor = deadKnots
     dead_outline_factor = 1.0
-    dead_outline_thickness = 0.02
+    dead_outline_thickness = thickness
     k_sLoc = glGetUniformLocation(shader, "k_s")
     glUniform1f(k_sLoc, k_s)
 
@@ -192,7 +195,7 @@ def main():
     glUniform1f(k_bLoc, k_b)
 
     knotColorLoc = glGetUniformLocation(shader, "knotColor")
-    glUniform3f(knotColorLoc, knotColor[0], knotColor[1], knotColor[2])
+    glUniform3f(knotColorLoc, liveknots, liveknots, liveknots)
 
     dead_color_factorLoc = glGetUniformLocation(shader, "dead_color_factor_default")
     glUniform1f(dead_color_factorLoc, dead_color_factor)
