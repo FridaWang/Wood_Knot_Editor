@@ -38,7 +38,8 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 def main():
-    p_file = open('parameters.json')
+    parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+    p_file = open(parm_path)
     data = json.load(p_file)
     smoothness = data['smoothness']
     liveknots = data['liveknots']
@@ -62,7 +63,7 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    parent_path = os.path.abspath('..')
+    parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
     mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
 
     #Vertices with normals
