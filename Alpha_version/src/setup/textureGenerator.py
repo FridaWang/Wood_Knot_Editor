@@ -1,7 +1,4 @@
 import sys
-#sys.path.append(r'c:\users\54040\appdata\local\programs\python\python39\lib\site-packages')
-#sys.path.append(r'C:\Users\37978\AppData\Local\Programs\Python\Python39\Lib\site-packages')
-#sys.path.append(r'C:\Users\54040\AppData\Roaming\Python\Python39\site-packages')
 import os
 import OpenGL.GL.shaders
 import numpy as np
@@ -45,8 +42,8 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
 def main():
     
     print(OpenGL.__file__)
-    parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
-    #parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+    #parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
+    parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
     p_file = open(parm_path)
     data = json.load(p_file)
     edgetightness = data['edgetightness']
@@ -72,8 +69,8 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
-    #parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
+    #parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
+    parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
     #mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
     mesh = om.read_trimesh(parent_path + '\\3d_model\\plank.obj', vertex_normal=True)
 
