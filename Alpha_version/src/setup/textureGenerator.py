@@ -85,10 +85,12 @@ def main():
     indices = np.array(face_array.flatten(), dtype = np.uint32)
 
     # Buffer vertices and indices
+    #store vertices
     VBO = glGenBuffers(1)
     glBindBuffer(GL_ARRAY_BUFFER, VBO)
     glBufferData(GL_ARRAY_BUFFER, 4*len(verts), verts, GL_DYNAMIC_DRAW)
 
+    #store indices
     EBO = glGenBuffers(1)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4*len(indices), indices, GL_DYNAMIC_DRAW)
