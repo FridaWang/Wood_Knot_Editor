@@ -448,6 +448,3 @@ void main()
     outColor = vec4(result, 1.0);
 }
 
-// TO DOs
-// To do : Gradual inversion around dead knot - code could be more readable and intuative to edit
-// To do : Knot coloring (alive, dead, dead outline) - code could be more readable and intuative to edit
