@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'C:\Users\54040\AppData\Local\Programs\Python\Python39\lib\site-packages')
+#sys.path.append(r'c:\users\54040\appdata\local\programs\python\python39\lib\site-packages')
 #sys.path.append(r'C:\Users\37978\AppData\Local\Programs\Python\Python39\Lib\site-packages')
 #sys.path.append(r'C:\Users\54040\AppData\Roaming\Python\Python39\site-packages')
 import os
