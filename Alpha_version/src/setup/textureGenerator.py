@@ -42,8 +42,8 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
 def main():
     
     print(OpenGL.__file__)
-    #parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
-    parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+    parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
+    #parm_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
     p_file = open(parm_path)
     data = json.load(p_file)
     edgetightness = data['edgetightness']
@@ -51,6 +51,10 @@ def main():
     liveknots = data['liveknots']
     deadKnots = data['deadKnots']
     thickness = data['thickness']
+    # custom_time = data['time']
+    # custom_rmin = data['rmin']
+    # custom_rmax = data['rmax']
+    # custom_colormap = data['colorMap']
 
 
     ### WINDOW SETUP ###########################################################
@@ -69,8 +73,8 @@ def main():
 
     ### LOAD INPUT 3D MODEL ####################################################
 
-    #parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
-    parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
+    parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src'
+    #parent_path = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src'
     #mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
     mesh = om.read_trimesh(parent_path + '\\3d_model\\plank.obj', vertex_normal=True)
 
@@ -135,7 +139,18 @@ def main():
     glEnable(GL_TEXTURE_2D)
 
     # Wood colors etc.
+    # if(custom_colormap == 0.0):
+    #     load_texture(0, parent_path + '\\wood_color_maps\\wood_bar_color.bmp')
+    # else if (custom_colormap == 1.0):
+    #     load_texture(0, parent_path+'\\wood_color_maps\\color1.bmp')
+    # else if (custom_colormap == 2.0):
+    #     load_texture(0, parent_path+'\\wood_color_maps\\color2.bmp')
+    # else if (custom_colormap == 3.0):
+    #     load_texture(0, parent_path+'\\wood_color_maps\\color3.bmp')
+    # else if (custom_colormap == 4.0):
+    #     load_texture(0, parent_path+'\\wood_color_maps\\color4.bmp')
     load_texture(0, parent_path+'\\wood_color_maps\\wood_bar_color.bmp')
+    #load_texture(0, parent_path+'\\wood_color_maps\\color4.bmp')
     load_texture(1, parent_path+'\\wood_color_maps\\wood_bar_specular.bmp')
     load_texture(2, parent_path+'\\wood_color_maps\\wood_bar_normal.bmp')
 
@@ -244,6 +259,8 @@ def main():
     timeLoc = glGetUniformLocation(shader, "time")
     #glUniform1f(timeLoc, glfw.get_time())
     glUniform1f(timeLoc, 590.0)
+    #glUniform1f(timeLoc, custom_time)
+
 
     # Draw mesh
     glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT,  None)
