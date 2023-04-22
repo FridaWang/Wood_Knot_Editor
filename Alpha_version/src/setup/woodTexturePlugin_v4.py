@@ -18,13 +18,20 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
 
     def __init__(self):
         OpenMayaMPx.MPxCommand.__init__(self)
+
+        self.woodType = 1
+
+        self.time = 0
+        self.rMin = 0.0
+        self.rMax = 0.0
+
         self.edgetightness = 0.0
         self.knotdistortion = 0.0
         self.liveKnots = 0.0
         self.deadKnots = 0.0
         self.thickness = 0.0
         
-        self.texturePath = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\output.png'
+        self.texturePath = r'D:\Upenn\Spring2023\CIS660\Wood_Knot_Editor\Alpha_version\src\setup\output.png'
         #self.texturePath = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\output.png'
 
     @staticmethod
@@ -35,6 +42,16 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
         # Add your command implementation here
         print("CALL WoodTexGenCmd!")
         argData = OpenMaya.MArgParser (self.syntax(), args)
+
+        if argData.isFlagSet ('c'):
+            self.woodType = argData.flagArgumentInt('c', 0)
+
+        if argData.isFlagSet ('s'):
+            self.time = argData.flagArgumentInt('s', 0)
+        if argData.isFlagSet ('m'):
+            self.rMin = argData.flagArgumentDouble('m', 0)
+        if argData.isFlagSet ('x'):
+            self.rMax = argData.flagArgumentDouble('x', 0)
 
         if argData.isFlagSet ('e'):
             self.edgetightness = argData.flagArgumentDouble('e', 0)
@@ -48,6 +65,10 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
             self.thickness = argData.flagArgumentDouble('t', 0)    
 
         parameters = {
+            'colorMap': self.woodType,
+            'time': self.time,
+            'rmin': self.rMin,
+            'rmax': self.rMax,
             'edgetightness': self.edgetightness,
             'knotdistortion': self.knotdistortion,
             'liveknots': self.liveKnots,
@@ -55,12 +76,12 @@ class WoodTexGenCmd(OpenMayaMPx.MPxCommand):
             'thickness': self.thickness
         }
 
-        json_filename = r'D:\Upenn\Spring2023\CIS660\Authoring_tool\Alpha_version\src\setup\parameters.json'
+        json_filename = r'D:\Upenn\Spring2023\CIS660\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
         #json_filename = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\Alpha_version\src\setup\parameters.json'
 
         with open(json_filename, 'w') as f:
             json.dump(parameters, f)
-            print("Write parameters to file path...")
+            print("Write parameters to file path..." + json_filename)
 
         # Generating texture with the custom parameters
         # textureGenerator.main()
@@ -119,6 +140,12 @@ def cmdCreator():
 # Syntax creator 
 def syntaxCreator(): 
     syntax = OpenMaya.MSyntax()
+
+    syntax.addFlag('c', 'woodType', OpenMaya.MSyntax.kUnsigned)
+
+    syntax.addFlag('s', 'timeSeed', OpenMaya.MSyntax.kUnsigned)
+    syntax.addFlag('m', 'radiusmin', OpenMaya.MSyntax.kDouble)
+    syntax.addFlag('x', 'radiusmax', OpenMaya.MSyntax.kDouble)
 
     syntax.addFlag('e', 'edgetightness', OpenMaya.MSyntax.kDouble)
     syntax.addFlag('k', 'knotdistortion', OpenMaya.MSyntax.kDouble)

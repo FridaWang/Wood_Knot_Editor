@@ -1,15 +1,24 @@
 global proc callWoodTexGenCmd()
 {
     print("Generating wood knot texture...\n");
-    float $tightness, $distortion, $liveKnots, $deadKnots, $thickness;
+    float $rMin, $rMax, $tightness, $distortion, $liveKnots, $deadKnots, $thickness;
+    string $time_text;
+    int $woodtype, $time;
 
+    $woodtype = `optionMenuGrp -query -select optionMenuControl`;
+
+    $time_text = `textField -query -text patternControl`;
+    $time = int($time_text);
+    $rMin = `floatSliderGrp -query -value  rMinControl`;
+    $rMax = `floatSliderGrp -query -value  rMaxControl`;
+    
     $tightness = `floatSliderGrp -query -value edgeTightnessControl`;
     $distortion = `floatSliderGrp -query -value knotDistortionControl`;
     $liveKnots = `floatSliderGrp -query -value liveKnotsControl`;
     $deadKnots = `floatSliderGrp -query -value deadKnotsControl`;
     $thickness = `floatSliderGrp -query -value thicknessControl`;
 
-    WoodTexGenCmd -e $tightness -k $distortion -l $liveKnots -d $deadKnots -t $thickness;
+    WoodTexGenCmd -c $woodtype -s $time -m $rMin -x $rMax -e $tightness -k $distortion -l $liveKnots -d $deadKnots -t $thickness;
 }
 
 global proc generateTimeSeed()
@@ -32,7 +41,12 @@ global proc createWoodTexGUI()
         frameLayout -label "Color Input" -marginWidth 5 -marginHeight 5;
             rowLayout -nc 2 -cw 1 150 -cw 2 300;
                 text -align "left" -label "Wood Type";
-                optionMenu optionMenuControl; menuItem -label "WoodType 1"; menuItem -label "WoodType 2"; menuItem -label "WoodType 3";
+                optionMenuGrp optionMenuControl; 
+                menuItem -label "WoodType 1"; 
+                menuItem -label "WoodType 2"; 
+                menuItem -label "WoodType 3";
+                menuItem -label "WoodType 4";
+                menuItem -label "WoodType 5";
             setParent..;
         setParent ..;
 
