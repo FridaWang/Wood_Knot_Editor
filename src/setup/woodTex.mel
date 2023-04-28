@@ -1,0 +1,115 @@
+global proc callWoodTexGenCmd()
+{
+    print("Generating wood knot texture...\n");
+    float $rMin, $rMax, $tightness, $distortion, $liveKnots, $thickness;
+    string $time_text;
+    int $woodtype, $time;
+
+    $woodtype = `optionMenuGrp -query -select optionMenuControl`;
+
+    $time_text = `textField -query -text patternControl`;
+    $time = int($time_text);
+    $rMin = `floatSliderGrp -query -value  rMinControl`;
+    $rMax = `floatSliderGrp -query -value  rMaxControl`;
+    
+    $tightness = `floatSliderGrp -query -value edgeTightnessControl`;
+    $distortion = `floatSliderGrp -query -value knotDistortionControl`;
+    $liveKnots = `floatSliderGrp -query -value liveKnotsControl`;
+    $thickness = `floatSliderGrp -query -value thicknessControl`;
+
+    WoodTexGenCmd -c $woodtype -s $time -m $rMin -x $rMax -e $tightness -k $distortion -l $liveKnots -t $thickness;
+}
+
+global proc generateTimeSeed()
+{
+    int $randomNumber = rand(1, 1000);
+    textField -edit -text $randomNumber patternControl;
+}
+
+global proc createWoodTexGUI()
+{
+    string $window;
+
+    if ( `window -exists WoodTexWindow` ) {
+        deleteUI WoodTexWindow;
+    }
+
+    $window = `window -title "Wood Texture" WoodTexWindow`;
+   
+    columnLayout;
+        frameLayout -label "Color Input" -marginWidth 5 -marginHeight 5;
+            rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                text -align "left" -label "Wood Type";
+                optionMenuGrp optionMenuControl; 
+                menuItem -label "WoodType 1"; 
+                menuItem -label "WoodType 2"; 
+                menuItem -label "WoodType 3";
+                menuItem -label "WoodType 4";
+                menuItem -label "WoodType 5";
+            setParent..;
+        setParent ..;
+
+        frameLayout -label "Texture patten" -marginWidth 5 -marginHeight 5;
+            rowLayout -nc 3 -cw 1 150;
+                text -align "left" -label "Time seed";
+                textField -text "590" -editable true patternControl;  
+                button -label "Generate" -command "generateTimeSeed";
+            setParent..;
+        setParent ..;
+
+        frameLayout -label "Annual ring radius" -marginWidth 5 -marginHeight 5;
+            rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                text -label "Min" -align "left";
+                floatSliderGrp -field true -minValue 5.0 -maxValue 200.0 -value 105.0 -pre 1 -step 5.0 rMinControl;
+            setParent ..;
+            rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                text -label "Max" -align "left";
+                floatSliderGrp -field true -minValue 5.0 -maxValue 200.0 -value 145.0 -pre 1 -step 5.0 rMaxControl;
+            setParent ..;
+        setParent ..;
+
+        frameLayout -label "Knots Input" -marginWidth 5 -marginHeight 5;
+            columnLayout;
+                rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                    text -label "Edge tightness" -align "left";
+                    floatSliderGrp -field true -minValue 0.0 -maxValue 10.0 -value 5.0 -pre 1 -step 0.5 edgeTightnessControl;
+                setParent ..;
+                rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                    text -label "Distortion strength" -align "left";
+                    floatSliderGrp -field true -minValue 0.0 -maxValue 10.0 -value 1.5 -pre 1 -step 0.5 knotDistortionControl;
+                setParent ..;
+                rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                    text -label "Darken strength" -align "left";
+                    floatSliderGrp -field true -minValue 0.0 -maxValue 1.0 -value 0.5 -step 0.1 -pre 1 liveKnotsControl;
+                setParent ..;
+                rowLayout -nc 2 -cw 1 150 -cw 2 300;
+                    text -label "Outline thickness (dead knots)" -align "left";
+                    floatSliderGrp -field true -minValue 0.0 -maxValue 0.1 -value 0.015 -pre 3 thicknessControl;
+                setParent ..;              
+            setParent ..;
+        setParent ..;
+
+        frameLayout -labelVisible false -marginHeight 5;
+            rowLayout -nc 2 -cw 1 200 -cw 2 200;
+                button -label "Apply" -align "center" -width 200 -command "callWoodTexGenCmd";
+                button -label "Cancel" -align "center" -width 200 -command "";
+            setParent..;
+        setParent..;
+    setParent..;
+    
+    string $allFrames[] = `lsUI -type "frameLayout"`;
+    string $allRows[] = `lsUI -type "rowLayout"`;
+    for ($frame in $allFrames) {
+        frameLayout -e -width 400 $frame;
+    }
+    for ($row in $allRows) {
+        rowLayout -e -width 400 $row;
+    }
+
+    showWindow WoodTexWindow;
+}
+
+setParent $gMainWindow;
+menu -label "Wood Texture" -tearOff true;
+    menuItem -label "Apply Default Texture" -command "createWoodTexGUI";
+
