@@ -40,8 +40,6 @@ def load_texture(i, path, nearest=False, repeat_x_edge=False):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 def main():
-    
-    #print(OpenGL.__file__)
     #parm_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\src\setup\parameters.json'
     parm_path = r'D:\Upenn\Spring2023\CIS660\Wood_Knot_Editor\src\setup\parameters.json'
     p_file = open(parm_path)
@@ -70,10 +68,8 @@ def main():
     glfw.make_context_current(window)
 
     ### LOAD INPUT 3D MODEL ####################################################
-
     #parent_path = r'C:\Users\54040\Desktop\660\authoringTool\Wood_Knot_Editor\src'
     parent_path = r'D:\Upenn\Spring2023\CIS660\Wood_Knot_Editor\src'
-    #mesh = om.read_trimesh(parent_path+'\\3d_model\\cube.obj', vertex_normal=True)
     mesh = om.read_trimesh(parent_path + '\\3d_model\\plank.obj', vertex_normal=True)
 
     #Vertices with normals
@@ -104,14 +100,10 @@ def main():
     glEnableVertexAttribArray(1)
 
     ### LOAD VERTEX AND FRAGEMENT SHADERS FROM EXTERNAL FILES ##################
-
-    #VERTEX_SHADER = open("main.vert",'r').read()
     VERTEX_SHADER = open(parent_path+'\\setup\\main.vert','r').read()
-
     FRAGMENT_SHADER = open(parent_path+'\\setup\\main.frag','r').read()
 
     # Compile The Program and shaders
-
     shader = OpenGL.GL.shaders.compileProgram(
         OpenGL.GL.shaders.compileShader(VERTEX_SHADER, GL_VERTEX_SHADER),
         OpenGL.GL.shaders.compileShader(FRAGMENT_SHADER, GL_FRAGMENT_SHADER))
@@ -131,7 +123,6 @@ def main():
         glfw.terminate()
         exit()
 
-
     ### LOAD TEXTURE MAPS ######################################################
 
     glEnable(GL_TEXTURE_2D)
@@ -146,8 +137,7 @@ def main():
         load_texture(0, parent_path+'\\wood_color_maps\\color3.bmp')
     elif (custom_colormap == 5):
         load_texture(0, parent_path+'\\wood_color_maps\\color4.bmp')
-    #load_texture(0, parent_path+'\\wood_color_maps\\wood_bar_color.bmp')
-    #load_texture(0, parent_path+'\\wood_color_maps\\color4.bmp')
+
     load_texture(1, parent_path+'\\wood_color_maps\\wood_bar_specular.bmp')
     load_texture(2, parent_path+'\\wood_color_maps\\wood_bar_normal.bmp')
 
@@ -194,10 +184,8 @@ def main():
     glUniform1i(knumLoc, knum)
 
     #customize parameters
-
     k_b = edgetightness
     k_s = knotdistortion
-    #knotColor = np.array([0.20,0.20,0.15])
     dead_color_factor = 0.2
     dead_outline_factor = 1.0
     dead_outline_thickness = thickness
@@ -256,10 +244,7 @@ def main():
 
     # Pass time variable to fragment shader (for animation)
     timeLoc = glGetUniformLocation(shader, "time")
-    #glUniform1f(timeLoc, glfw.get_time())
-    #glUniform1f(timeLoc, 590.0)
     glUniform1f(timeLoc, custom_time)
-
 
     # Draw mesh
     glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT,  None)
